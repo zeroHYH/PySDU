@@ -83,18 +83,18 @@ def get_timetable(cookie):
         if page.status_code == 200:
             print('已获取本周课表：')
         page = bs4.BeautifulSoup(page.text, 'html.parser')
-        lessons = page.findAll('td')
+        lessons = page.find_all('td')
         for lesson in lessons:
-            c = lesson.findAll('div')
+            c = lesson.find_all('div')
             if len(c) == 0:
                 continue
             name = c[0].find('p').text
-            credit = c[1].findAll('span')[0].text
-            time = c[1].findAll('span')[1].text
-            loc = c[2].findAll('span')[0].text
+            credit = c[1].find_all('span')[0].text
+            time = c[1].find_all('span')[1].text
+            loc = c[2].find_all('span')[0].text
             # remove the img before loc
             loc = re.sub(r'<img.*?>', '', str(loc))
-            week = c[2].findAll('span')[1].text
+            week = c[2].find_all('span')[1].text
             week = re.sub(r'<img.*?>', '', str(week))
             print(name, credit, time, loc, week)
         return True
@@ -121,14 +121,14 @@ def get_timetable(cookie):
                 print('尝试拉取所有课程：')
             page = bs4.BeautifulSoup(page.text, 'html.parser')
             try:
-                kbjcmsid = page.find(id='kbjcmsid_ul').findAll('li')[0].attrs['data-value']  # type: ignore
+                kbjcmsid = page.find(id='kbjcmsid_ul').find_all('li')[0].attrs['data-value']  # type: ignore
                 assert main(rq, semester, kbjcmsid)
             except Exception as exc:
                 print(f'第二次尝试拉取课程列表失败——{exc}')
             else:
                 return
             print('尝试仅拉取课程信息：')
-            lessons = page.findAll('td')
+            lessons = page.find_all('td')
             k=0
             for lesson in lessons:
                 if span:=lesson.find('span').text:
